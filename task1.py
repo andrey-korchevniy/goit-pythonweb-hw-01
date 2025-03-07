@@ -1,58 +1,62 @@
-from abc import abstractmethod, ABC 
+from abc import abstractmethod, ABC
+from typing import Optional
+import logging
 
 
-def run_task1():
+def run_task1() -> None:
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    )
+    logger = logging.getLogger("task1")
+
     class Vehicle(ABC):
         @abstractmethod
-        def start_engine(self):
+        def start_engine(self) -> None:
             pass
-        
+
     class VehicleFactory(ABC):
         @abstractmethod
-        def create_car(self, make, model):
+        def create_car(self, make: str, model: str) -> "Car":
             pass
-        
+
         @abstractmethod
-        def create_motorcycle(self, make, model):
+        def create_motorcycle(self, make: str, model: str) -> "Motorcycle":
             pass
-        
+
     class USVehicleFactory(VehicleFactory):
-        def create_car(self, make, model):
+        def create_car(self, make: str, model: str) -> "Car":
             return Car(make, model, "US Spec")
-        
-        def create_motorcycle(self, make, model):
+
+        def create_motorcycle(self, make: str, model: str) -> "Motorcycle":
             return Motorcycle(make, model, "US Spec")
-        
+
     class EUVehicleFactory(VehicleFactory):
-        def create_car(self, make, model):
+        def create_car(self, make: str, model: str) -> "Car":
             return Car(make, model, "EU Spec")
-        
-        def create_motorcycle(self, make, model):
+
+        def create_motorcycle(self, make: str, model: str) -> "Motorcycle":
             return Motorcycle(make, model, "EU Spec")
-        
 
     class Car(Vehicle):
-        def __init__(self, make, model, region=""):
+        def __init__(self, make: str, model: str, region: Optional[str] = "") -> None:
             self.make = make
             self.model = model
             self.region = region
 
-        def start_engine(self):
-            print(f"{self.make} {self.model} ({self.region}): Двигун запущено")
-
+        def start_engine(self) -> None:
+            logger.info(f"{self.make} {self.model} ({self.region}): Двигун запущено")
 
     class Motorcycle(Vehicle):
-        def __init__(self, make, model, region=""):
+        def __init__(self, make: str, model: str, region: Optional[str] = "") -> None:
             self.make = make
             self.model = model
             self.region = region
 
-        def start_engine(self):
-            print(f"{self.make} {self.model} ({self.region}): Мотор заведено")
-            
+        def start_engine(self) -> None:
+            logger.info(f"{self.make} {self.model} ({self.region}): Мотор заведено")
 
-
-    print("Using factories to create vehicles:")
+    logger.info("Using factories to create vehicles:")
     us_factory = USVehicleFactory()
     eu_factory = EUVehicleFactory()
 
@@ -69,6 +73,7 @@ def run_task1():
 
     eu_motorcycle = eu_factory.create_motorcycle("Ducati", "Monster")
     eu_motorcycle.start_engine()
+
 
 if __name__ == "__main__":
     run_task1()
